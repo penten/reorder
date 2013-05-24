@@ -1,0 +1,54 @@
+<?php
+/**
+ * @file
+ * Allows reordering of nodes within a taxonomy
+ */
+
+function reorder_menu() {
+    $items['taxonomy/term/%taxonomy_term/reorder'] = array(
+        'title callback' => 'reorder_term_order_title',
+        'title arguments' => array(2),
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('reorder_term_order_form', 2),
+        'access arguments' => array('administer taxonomy'),
+        'file' => 'reorder.admin.inc',
+        'type' => MENU_LOCAL_TASK);
+
+    return $items;
+}
+
+function reorder_term_order_title($term) {
+    return t('Reorder !term', array('!term' => $term->name));
+}
+
+function reorder_theme() {
+    return array(
+        'reorder_term_order_form' => array(
+            'render element' => 'form',
+            'file' => 'reorder.admin.inc',
+        ),
+    );
+}
+
+function reorder_save($tid, $nid, $weight) {
+    db_delete('reorder')->condition('nid', $nid)->condition('tid', $tid)->execute();
+    return db_insert('reorder')->fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->execute();
+}
+
+function reorder_weight($tid, $nid) {
+    $result = db_select('reorder', 'r')
+            ->condition('r.tid', $tid)
+            ->condition('r.nid', $nid)
+            ->fields('r', array('weight'))
+            ->execute();
+
+    $weight = $result->fetchField(0);
+    return $weight;
+}
+
+function reorder_views_api() {
+    return array(
+        'api' => 3,
+        'path' => drupal_get_path('module', 'reorder') . '/views',
+    );
+}

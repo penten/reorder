@@ -1,0 +1,5 @@
+name = "Reorder"
+description = "Allows fixing the order of nodes within a term"
+core = 7.x
+
+files[] = views/reorder_views_handler_sort_reorder.inc
