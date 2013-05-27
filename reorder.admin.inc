@@ -4,6 +4,9 @@
  * Show pages allowing reordering of nodes within a taxonomy
  */
 
+/**
+ * Generate a form allowing reordering of nodes within the given term
+ */
 function reorder_term_order_form($form, &$form_state, $term) {
     $nodes = reorder_select_nodes($term->tid);
     
@@ -30,6 +33,9 @@ function reorder_term_order_form($form, &$form_state, $term) {
     return $form;
 }
 
+/**
+ * Save the configured node weights
+ */
 function reorder_term_order_form_submit($form, &$form_state) {
     foreach ($form['#nids'] as $nid) {
         $weight = $form_state['values'][$nid]['weight'];
@@ -38,6 +44,9 @@ function reorder_term_order_form_submit($form, &$form_state) {
     }
 }
 
+/**
+ * Render the node reordering form
+ */
 function theme_reorder_term_order_form($form) {
     $form = $form['form'];
     $headers = array('', 'Node', 'Weight');

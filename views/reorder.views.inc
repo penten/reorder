@@ -4,6 +4,9 @@
  * Expose the reorder table to views
  */
 
+/**
+ * Implements hook_views_data()
+ */
 function reorder_views_data() {
     $data['reorder']['table'] = array(
         'group' => 'Taxonomy',

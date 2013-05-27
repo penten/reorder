@@ -4,12 +4,15 @@
  * The views handler allowing sorting by order within taxonomy
  */
 
+/**
+ * Sort handler that sorts based upon the weight of a node within a term
+ */
 class reorder_views_handler_sort_weight extends views_handler_sort {
 
     function query() {
         $this->ensure_my_table();
 
-        /* find if there is a filter on tid */
+        // find if there is a filter on tid
         $tid = FALSE;
         foreach ($this->query->where as $group) {
             foreach ($group['conditions'] as $condition) {
@@ -21,6 +24,8 @@ class reorder_views_handler_sort_weight extends views_handler_sort {
 
         // if there was not a term filter found, we will show nothing
         $this->query->add_where(50, 'reorder.tid', $tid);
-        $this->query->add_orderby($this->table_alias, $this->real_field, $this->options['order']);
+        $this->query->add_orderby($this->table_alias,
+                                  $this->real_field,
+                                  $this->options['order']);
     }
 }

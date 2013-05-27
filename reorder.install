@@ -4,6 +4,9 @@
  * Installs the reorder module.
  */
 
+/**
+ * Implements hook_schema().
+ */
 function reorder_schema() {
     $schema['reorder'] = array(
         'description' => 'Node order within a taxonomy',
@@ -12,7 +15,7 @@ function reorder_schema() {
                 'type' => 'int',
                 'unsigned' => TRUE,
                 'not null' => TRUE,
-                'description' => "Term in which the node is ordered"
+                'description' => "Term in which the node is ordered",
             ),
             'nid' => array(
                 'type' => 'int',
@@ -24,7 +27,7 @@ function reorder_schema() {
                 'type' => 'int',
                 'unsigned' => FALSE,
                 'not null' => TRUE,
-                'description' => "The weight of the node within this term"
+                'description' => "The weight of the node within this term",
             ),
         ),
     );

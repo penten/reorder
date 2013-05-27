@@ -4,6 +4,9 @@
  * Allows reordering of nodes within a taxonomy
  */
 
+/**
+ * Implements hook_menu()
+ */
 function reorder_menu() {
     $items['taxonomy/term/%taxonomy_term/reorder'] = array(
         'title callback' => 'reorder_term_order_title',
@@ -17,10 +20,16 @@ function reorder_menu() {
     return $items;
 }
 
+/**
+ * Title callback: sets the title of the reorder nodes tab
+ */
 function reorder_term_order_title($term) {
     return t('Reorder !term', array('!term' => $term->name));
 }
 
+/**
+ * Implements hook_theme()
+ */
 function reorder_theme() {
     return array(
         'reorder_term_order_form' => array(
@@ -30,11 +39,41 @@ function reorder_theme() {
     );
 }
 
+/**
+ * Saves the weight of a node in the database
+ *
+ * @param $tid
+ *   The tid of the term that the node's order has been configured within
+ * @param $nid
+ *   The nid of the node that's order has been configured
+ * @param $weight
+ *   The weight of the given node within the given term
+ *
+ * @return
+ *   The last insert ID of the query, if one exists.
+ */
 function reorder_save($tid, $nid, $weight) {
-    db_delete('reorder')->condition('nid', $nid)->condition('tid', $tid)->execute();
-    return db_insert('reorder')->fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->execute();
+    db_delete('reorder')->
+            condition('nid', $nid)->
+            condition('tid', $tid)->
+            execute();
+
+    return db_insert('reorder')->
+            fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->
+            execute();
 }
 
+/**
+ * Retrieves the weight of a node from the database
+ *
+ * @param $tid
+ *   The weight returned corresponds to the weight of the node within this term
+ * @param $nid
+ *   The nid of the node that's weight should be returned
+ *
+ * @return
+ *   The weight of the given node within the given term
+ */
 function reorder_weight($tid, $nid) {
     $result = db_select('reorder', 'r')
             ->condition('r.tid', $tid)
@@ -46,6 +85,9 @@ function reorder_weight($tid, $nid) {
     return $weight;
 }
 
+/**
+ * Implements hook_views_api
+ */
 function reorder_views_api() {
     return array(
         'api' => 3,
@@ -53,6 +95,20 @@ function reorder_views_api() {
     );
 }
 
+/**
+ * Selects nodes from the given tid, ordered by weight.
+ *
+ * Uses a paged query
+ *
+ * @param $tid
+ *   The tid for which nodes should be retrieved
+ *
+ * @return
+ *   An array of up to 20 objects, keyed by nid
+ * 
+ *   Each object contains the title of the node, the node's nid and the node's
+ *   weight.
+ */
 function reorder_select_nodes($tid) {
     $query = db_select('node', 'n')->extend('PagerDefault');
     $query->join('reorder', 'r', 'r.nid = n.nid');
