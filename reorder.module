@@ -8,35 +8,35 @@
  * Implements hook_menu()
  */
 function reorder_menu() {
-    $items['taxonomy/term/%taxonomy_term/reorder'] = array(
-        'title callback' => 'reorder_term_order_title',
-        'title arguments' => array(2),
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('reorder_term_order_form', 2),
-        'access arguments' => array('administer taxonomy'),
-        'file' => 'reorder.admin.inc',
-        'type' => MENU_LOCAL_TASK);
+  $items['taxonomy/term/%taxonomy_term/reorder'] = array(
+    'title callback' => 'reorder_term_order_title',
+    'title arguments' => array(2),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('reorder_term_order_form', 2),
+    'access arguments' => array('administer taxonomy'),
+    'file' => 'reorder.admin.inc',
+    'type' => MENU_LOCAL_TASK);
 
-    return $items;
+  return $items;
 }
 
 /**
  * Title callback: sets the title of the reorder nodes tab
  */
 function reorder_term_order_title($term) {
-    return t('Reorder !term', array('!term' => $term->name));
+  return t('Reorder !term', array('!term' => $term->name));
 }
 
 /**
  * Implements hook_theme()
  */
 function reorder_theme() {
-    return array(
-        'reorder_term_order_form' => array(
-            'render element' => 'form',
-            'file' => 'reorder.admin.inc',
-        ),
-    );
+  return array(
+    'reorder_term_order_form' => array(
+      'render element' => 'form',
+      'file' => 'reorder.admin.inc',
+    ),
+  );
 }
 
 /**
@@ -53,14 +53,14 @@ function reorder_theme() {
  *   The last insert ID of the query, if one exists.
  */
 function reorder_save($tid, $nid, $weight) {
-    db_delete('reorder')->
-            condition('nid', $nid)->
-            condition('tid', $tid)->
-            execute();
+  db_delete('reorder')->
+          condition('nid', $nid)->
+          condition('tid', $tid)->
+          execute();
 
-    return db_insert('reorder')->
-            fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->
-            execute();
+  return db_insert('reorder')->
+          fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->
+          execute();
 }
 
 /**
@@ -75,24 +75,24 @@ function reorder_save($tid, $nid, $weight) {
  *   The weight of the given node within the given term
  */
 function reorder_weight($tid, $nid) {
-    $result = db_select('reorder', 'r')
-            ->condition('r.tid', $tid)
-            ->condition('r.nid', $nid)
-            ->fields('r', array('weight'))
-            ->execute();
+  $result = db_select('reorder', 'r')
+          ->condition('r.tid', $tid)
+          ->condition('r.nid', $nid)
+          ->fields('r', array('weight'))
+          ->execute();
 
-    $weight = $result->fetchField(0);
-    return $weight;
+  $weight = $result->fetchField(0);
+  return $weight;
 }
 
 /**
  * Implements hook_views_api
  */
 function reorder_views_api() {
-    return array(
-        'api' => 3,
-        'path' => drupal_get_path('module', 'reorder') . '/views',
-    );
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'reorder') . '/views',
+  );
 }
 
 /**
@@ -105,18 +105,18 @@ function reorder_views_api() {
  *
  * @return
  *   An array of up to 20 objects, keyed by nid
- * 
+ *
  *   Each object contains the title of the node, the node's nid and the node's
  *   weight.
  */
 function reorder_select_nodes($tid) {
-    $query = db_select('node', 'n')->extend('PagerDefault');
-    $query->join('reorder', 'r', 'r.nid = n.nid');
-    $query->fields('n', array('nid', 'title'));
-    $query->fields('r', array('weight'));
-    $query->condition('tid', $tid);
-    $query->orderBy('r.weight', 'ASC');
-    $query->limit(20);
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->join('reorder', 'r', 'r.nid = n.nid');
+  $query->fields('n', array('nid', 'title'));
+  $query->fields('r', array('weight'));
+  $query->condition('tid', $tid);
+  $query->orderBy('r.weight', 'ASC');
+  $query->limit(20);
         
-    return $query->execute()->fetchAllAssoc('nid');
+  return $query->execute()->fetchAllAssoc('nid');
 }

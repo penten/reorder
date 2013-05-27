@@ -8,29 +8,29 @@
  * Implements hook_schema().
  */
 function reorder_schema() {
-    $schema['reorder'] = array(
-        'description' => 'Node order within a taxonomy',
-        'fields' => array(
-            'tid' => array(
-                'type' => 'int',
-                'unsigned' => TRUE,
-                'not null' => TRUE,
-                'description' => "Term in which the node is ordered",
-            ),
-            'nid' => array(
-                'type' => 'int',
-                'unsigned' => TRUE,
-                'not null' => TRUE,
-                'description' => "Node which the order corresponds to",
-            ),
-            'weight' => array(
-                'type' => 'int',
-                'unsigned' => FALSE,
-                'not null' => TRUE,
-                'description' => "The weight of the node within this term",
-            ),
-        ),
-    );
+  $schema['reorder'] = array(
+    'description' => 'Node order within a taxonomy',
+    'fields' => array(
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => "Term in which the node is ordered",
+      ),
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => "Node which the order corresponds to",
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'unsigned' => FALSE,
+        'not null' => TRUE,
+        'description' => "The weight of the node within this term",
+      ),
+    ),
+  );
 
-    return $schema;
+  return $schema;
 }
