@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  */
 function reorder_menu() {
   $items['taxonomy/term/%taxonomy_term/reorder'] = array(
@@ -21,14 +21,14 @@ function reorder_menu() {
 }
 
 /**
- * Title callback: sets the title of the reorder nodes tab
+ * Title callback: sets the title of the reorder nodes tab.
  */
 function reorder_term_order_title($term) {
   return t('Reorder !term', array('!term' => $term->name));
 }
 
 /**
- * Implements hook_theme()
+ * Implements hook_theme().
  */
 function reorder_theme() {
   return array(
@@ -40,7 +40,7 @@ function reorder_theme() {
 }
 
 /**
- * Saves the weight of a node in the database
+ * Saves the weight of a node in the database.
  *
  * @param $tid
  *   The tid of the term that the node's order has been configured within
@@ -53,18 +53,18 @@ function reorder_theme() {
  *   The last insert ID of the query, if one exists.
  */
 function reorder_save($tid, $nid, $weight) {
-  db_delete('reorder')->
-          condition('nid', $nid)->
-          condition('tid', $tid)->
-          execute();
+  db_delete('reorder')
+          ->condition('nid', $nid)
+          ->condition('tid', $tid)
+          ->execute();
 
-  return db_insert('reorder')->
-          fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))->
-          execute();
+  return db_insert('reorder')
+          ->fields(array('nid' => $nid, 'tid' => $tid, 'weight' => $weight))
+          ->execute();
 }
 
 /**
- * Retrieves the weight of a node from the database
+ * Retrieves the weight of a node from the database.
  *
  * @param $tid
  *   The weight returned corresponds to the weight of the node within this term
@@ -86,7 +86,7 @@ function reorder_weight($tid, $nid) {
 }
 
 /**
- * Implements hook_views_api
+ * Implements hook_views_api().
  */
 function reorder_views_api() {
   return array(
@@ -98,7 +98,7 @@ function reorder_views_api() {
 /**
  * Selects nodes from the given tid, ordered by weight.
  *
- * Uses a paged query
+ * Uses a paged query.
  *
  * @param $tid
  *   The tid for which nodes should be retrieved

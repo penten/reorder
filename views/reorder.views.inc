@@ -5,7 +5,7 @@
  */
 
 /**
- * Implements hook_views_data()
+ * Implements hook_views_data().
  */
 function reorder_views_data() {
   $data['reorder']['table'] = array(
@@ -23,7 +23,7 @@ function reorder_views_data() {
     'help' => t('The weight of this node in the given taxonomy'),
     'sort' => array(
       'handler' => 'reorder_views_handler_sort_weight',
-    )
+    ),
   );
 
   return $data;
