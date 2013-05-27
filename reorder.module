@@ -52,3 +52,15 @@ function reorder_views_api() {
         'path' => drupal_get_path('module', 'reorder') . '/views',
     );
 }
+
+function reorder_select_nodes($tid) {
+    $query = db_select('node', 'n')->extend('PagerDefault');
+    $query->join('reorder', 'r', 'r.nid = n.nid');
+    $query->fields('n', array('nid', 'title'));
+    $query->fields('r', array('weight'));
+    $query->condition('tid', $tid);
+    $query->orderBy('r.weight', 'ASC');
+    $query->limit(20);
+        
+    return $query->execute()->fetchAllAssoc('nid');
+}

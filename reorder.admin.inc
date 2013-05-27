@@ -5,22 +5,25 @@
  */
 
 function reorder_term_order_form($form, &$form_state, $term) {
-    $nids = taxonomy_select_nodes($term->tid);
-    $weighted_nids = array();
+    $nodes = reorder_select_nodes($term->tid);
     
-    foreach ($nids as $nid) {
-        $node = node_load($nid);
-        $form[$nid]['#node'] = $node;
-        $form[$nid]['title'] = array('#markup' => $node->title);
-        $form[$nid]['weight'] = array('#type' => 'weight', '#title' => t('Weight'), '#default_value' => reorder_weight($term->tid, $nid));
-        $weighted_nids[$nid] = $form[$nid]['weight']['#default_value'];
+    foreach ($nodes as $nid => $node) {
+        $form[$nid]['title'] = array(
+            '#markup' => $node->title);
+        
+        $form[$nid]['weight'] = array(
+            '#type' => 'weight',
+            '#title' => t('Weight'),
+            '#default_value' => $node->weight);
     }
-    asort($weighted_nids);
     
-    $form['#nids'] = array_keys($weighted_nids);
+    $form['#nids'] = array_keys($nodes);
     $form['#term'] = $term;
     $form['#tree'] = TRUE;
-    $form['submit'] = array('#type' => 'submit', '#value' => t('Save Order'));
+    
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Save Order'));
 
     drupal_set_title(reorder_term_order_title($term));
 
@@ -53,6 +56,8 @@ function theme_reorder_term_order_form($form) {
     $output .= drupal_render_children($form);
 
     drupal_add_tabledrag('term-reorder', 'order', 'sibling', 'term-reorder-weight');
+
+    $output .= theme('pager');
 
     return $output;
 }
